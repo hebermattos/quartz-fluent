@@ -32,7 +32,7 @@ namespace Services
             return _scheduler.Start();
         }
 
-        public Task ScheduleJob<T>(int interval) where T : IJob
+        public Task ScheduleJob<T>(int intervalInSeconds) where T : IJob
         {
             IJobDetail job = JobBuilder.Create<T>()
                                .WithIdentity(typeof(T).Name, "job-group")
@@ -42,8 +42,23 @@ namespace Services
               .WithIdentity(typeof(T).Name, "trigger-group")
               .StartNow()
               .WithSimpleSchedule(x => x
-                  .WithIntervalInSeconds(interval)
+                  .WithIntervalInSeconds(intervalInSeconds)
                   .RepeatForever())
+              .Build();
+
+            return _scheduler.ScheduleJob(job, trigger);
+        }
+
+        public Task ScheduleJob<T>(string cronExpression) where T : IJob
+        {
+            IJobDetail job = JobBuilder.Create<T>()
+                               .WithIdentity(typeof(T).Name, "job-group")
+                               .Build();
+
+            ITrigger trigger = TriggerBuilder.Create()
+              .WithIdentity(typeof(T).Name, "trigger-group")
+              .StartNow()
+              .WithCronSchedule(cronExpression)
               .Build();
 
             return _scheduler.ScheduleJob(job, trigger);

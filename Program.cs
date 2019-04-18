@@ -27,7 +27,7 @@ namespace quartz_hello_world
                 await schedulerService.Start();
 
                 await schedulerService.ScheduleJob<FooJob>(2);
-                await schedulerService.ScheduleJob<BarJob>(7);
+                await schedulerService.ScheduleJob<BarJob>("* * * * * ? *");
 
                 Console.ReadLine();
             }
