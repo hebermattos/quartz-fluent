@@ -23,7 +23,7 @@ namespace quartz_hello_world
                 var logProvider = new ConsoleLog();
                 var schedulerService = new SchedulerService();
 
-                await schedulerService.Create("minha-instancia-agendador", 2, logProvider);
+                await schedulerService.Create("my-scheduler", 2, logProvider);
                 await schedulerService.Start();
 
                 await schedulerService.ScheduleJob<HelloJob>(2);
