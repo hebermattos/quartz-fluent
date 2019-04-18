@@ -26,8 +26,8 @@ namespace quartz_hello_world
                 await schedulerService.Create("my-scheduler", 2, logProvider);
                 await schedulerService.Start();
 
-                await schedulerService.ScheduleJob<HelloJob>(2);
-                await schedulerService.ScheduleJob<ByeJob>(7);
+                await schedulerService.ScheduleJob<FooJob>(2);
+                await schedulerService.ScheduleJob<BarJob>(7);
 
                 Console.ReadLine();
             }
