@@ -13,8 +13,6 @@ namespace quartz_hello_world
     {
         static void Main(string[] args)
         {
-
-
             RunProgram().GetAwaiter().GetResult();
         }
 
@@ -24,19 +22,12 @@ namespace quartz_hello_world
             {
                 var logProvider = new ConsoleLog();
                 var schedulerService = new SchedulerService();
-                var scheduler = await schedulerService.Create("minha-instancia-agendador", 2, logProvider);
 
-                await scheduler.Start();
+                await schedulerService.Create("minha-instancia-agendador", 2, logProvider);
+                await schedulerService.Start();
 
-                var jobService = new JobService();
-
-                var jobList = new List<(IJobDetail, ITrigger)>(){
-                    jobService.GetJobConfig<HelloJob>(2),
-                    jobService.GetJobConfig<ByeJob>(7)
-                };
-
-                foreach (var job in jobList)
-                    await scheduler.ScheduleJob(job.Item1, job.Item2);
+                await schedulerService.ScheduleJob<HelloJob>(2);
+                await schedulerService.ScheduleJob<ByeJob>(7);
 
                 Console.ReadLine();
             }

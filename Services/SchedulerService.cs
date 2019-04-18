@@ -8,7 +8,9 @@ namespace Services
 {
     public class SchedulerService
     {
-        public async Task<IScheduler> Create(string instanceName, int threadCount, ILogProvider logProvider)
+        private IScheduler _scheduler;
+
+        public async Task Create(string instanceName, int threadCount, ILogProvider logProvider)
         {
             LogProvider.SetCurrentLogProvider(logProvider);
 
@@ -22,9 +24,29 @@ namespace Services
 
             StdSchedulerFactory factory = new StdSchedulerFactory(props);
 
-            IScheduler scheduler = await factory.GetScheduler();
+            _scheduler = await factory.GetScheduler();
+        }
 
-            return scheduler;
+        public Task Start()
+        {
+            return _scheduler.Start();
+        }
+
+        public Task ScheduleJob<T>(int interval) where T : IJob
+        {
+            IJobDetail job = JobBuilder.Create<T>()
+                               .WithIdentity(typeof(T).Name, "job-group")
+                               .Build();
+
+            ITrigger trigger = TriggerBuilder.Create()
+              .WithIdentity(typeof(T).Name, "trigger-group")
+              .StartNow()
+              .WithSimpleSchedule(x => x
+                  .WithIntervalInSeconds(interval)
+                  .RepeatForever())
+              .Build();
+
+            return _scheduler.ScheduleJob(job, trigger);
         }
     }
 }
