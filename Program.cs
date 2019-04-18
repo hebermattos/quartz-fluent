@@ -19,12 +19,9 @@ namespace quartz_hello_world
         {
             try
             {
-                NameValueCollection props = new NameValueCollection
-                {
-                    { "quartz.serializer.type", "binary" }
-                };
-                StdSchedulerFactory factory = new StdSchedulerFactory(props);
-                IScheduler scheduler = await factory.GetScheduler();
+                var schedulerService = new SchedulerService();
+                var scheduler = await schedulerService.Create();
+
                 await scheduler.Start();
 
                 var jobService = new JobService();
