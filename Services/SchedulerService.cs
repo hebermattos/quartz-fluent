@@ -7,14 +7,14 @@ namespace Services
 {
     public class SchedulerService
     {
-        public async Task<IScheduler> Create()
+        public async Task<IScheduler> Create(string instanceName, int threadCount)
         {
             NameValueCollection props = new NameValueCollection
                 {
                     {"quartz.serializer.type", "binary" },
-                    {"quartz.scheduler.instanceName" , "MyScheduler"} ,
+                    {"quartz.scheduler.instanceName" , instanceName} ,
                     {"quartz.jobStore.type" , "Quartz.Simpl.RAMJobStore"} ,
-                    {"quartz.threadPool.threadCount" , "3"}
+                    {"quartz.threadPool.threadCount" , threadCount.ToString()}
                 };
 
             StdSchedulerFactory factory = new StdSchedulerFactory(props);

@@ -20,7 +20,7 @@ namespace quartz_hello_world
             try
             {
                 var schedulerService = new SchedulerService();
-                var scheduler = await schedulerService.Create();
+                var scheduler = await schedulerService.Create("minha-instancia-agendador", threadCount: 2);
 
                 await scheduler.Start();
 
