@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Quartz;
 using Quartz.Impl;
+using Quartz.Logging;
 using Services;
 
 namespace quartz_hello_world
@@ -12,6 +13,8 @@ namespace quartz_hello_world
     {
         static void Main(string[] args)
         {
+
+
             RunProgram().GetAwaiter().GetResult();
         }
 
@@ -19,8 +22,9 @@ namespace quartz_hello_world
         {
             try
             {
+                var logProvider = new ConsoleLog();
                 var schedulerService = new SchedulerService();
-                var scheduler = await schedulerService.Create("minha-instancia-agendador", threadCount: 2);
+                var scheduler = await schedulerService.Create("minha-instancia-agendador", 2, logProvider);
 
                 await scheduler.Start();
 

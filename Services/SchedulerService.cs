@@ -2,13 +2,16 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Quartz;
 using Quartz.Impl;
+using Quartz.Logging;
 
 namespace Services
 {
     public class SchedulerService
     {
-        public async Task<IScheduler> Create(string instanceName, int threadCount)
+        public async Task<IScheduler> Create(string instanceName, int threadCount, ILogProvider logProvider)
         {
+            LogProvider.SetCurrentLogProvider(logProvider);
+
             NameValueCollection props = new NameValueCollection
                 {
                     {"quartz.serializer.type", "binary" },
