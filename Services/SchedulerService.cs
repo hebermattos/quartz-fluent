@@ -25,11 +25,11 @@ namespace Services
 
             StdSchedulerFactory factory = new StdSchedulerFactory(props);
 
-            _scheduler =  factory.GetScheduler().Result;
+            _scheduler = factory.GetScheduler().Result;
 
             _scheduler.Start();
 
-             return this;
+            return this;
         }
 
         public IScheduler ScheduleJob<T>(int intervalInSeconds) where T : IJob
