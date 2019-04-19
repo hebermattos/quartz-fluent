@@ -4,16 +4,13 @@ Program.cs
 var logProvider = new ConsoleLog();
 var schedulerService = new SchedulerService();
 
-await schedulerService.CreateInMemoryScheduler(
-    instanceName: "my-scheduler", 
-    threadCount: 2, 
-    logProvider: logProvider
-);
-
- schedulerService
-    .Start()
-    .ScheduleJob<FooJob>(2)
-    .ScheduleJob<BarJob>("* * * * * ? *");
+schedulerService
+        .CreateInMemoryScheduler(
+            instanceName: "my-scheduler", 
+            threadCount: 2, 
+            logProvider: logProvider
+        ).ScheduleJob<FooJob>(intervalInSeconds: 2)
+         .ScheduleJob<BarJob>(cronExpression: "* * * * * ? *");
 ```
 
 output
