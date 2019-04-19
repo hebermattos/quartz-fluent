@@ -3,12 +3,16 @@ Program.cs
 ``` 
 var logProvider = new ConsoleLog();
 var schedulerService = new SchedulerService();
+                
+await schedulerService.CreateInMemoryScheduler(
+    instanceName: "my-scheduler", 
+    threadCount: 2, 
+    logProvider: logProvider
+);
 
-await schedulerService.Create("my-scheduler", 2, logProvider);
-await schedulerService.Start();
-
+await schedulerService.S
 await schedulerService.ScheduleJob<FooJob>(2);
-await schedulerService.ScheduleJob<BarJob>(7);
+await schedulerService.ScheduleJob<BarJob>("* * * * * ? *");
 ```
 
 output
