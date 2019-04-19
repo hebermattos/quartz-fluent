@@ -10,7 +10,7 @@ namespace Services
     {
         private Quartz.IScheduler _scheduler;
 
-        public async Task CreateInMemoryScheduler(string instanceName, int threadCount, ILogProvider logProvider)
+        public IScheduler CreateInMemoryScheduler(string instanceName, int threadCount, ILogProvider logProvider)
         {
             if (logProvider != null)
                 LogProvider.SetCurrentLogProvider(logProvider);
@@ -25,12 +25,9 @@ namespace Services
 
             StdSchedulerFactory factory = new StdSchedulerFactory(props);
 
-            _scheduler = await factory.GetScheduler();
-        }
+            _scheduler =  factory.GetScheduler().Result;
 
-        public IScheduler Start()
-        {
-             _scheduler.Start();
+            _scheduler.Start();
 
              return this;
         }

@@ -8,9 +8,7 @@ namespace Services
 {
     public interface IScheduler 
     {        
-         Task CreateInMemoryScheduler(string instanceName, int threadCount, ILogProvider logProvider);
-
-         IScheduler Start();
+         IScheduler CreateInMemoryScheduler(string instanceName, int threadCount, ILogProvider logProvider);
 
          IScheduler ScheduleJob<T>(int intervalInSeconds) where T : IJob;
 
