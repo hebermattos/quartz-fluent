@@ -10,9 +10,10 @@ namespace Services
     {
         private IScheduler _scheduler;
 
-        public async Task Create(string instanceName, int threadCount, ILogProvider logProvider)
+        public async Task CreateInMemoryScheduler(string instanceName, int threadCount, ILogProvider logProvider)
         {
-            LogProvider.SetCurrentLogProvider(logProvider);
+            if (logProvider != null)
+                LogProvider.SetCurrentLogProvider(logProvider);
 
             NameValueCollection props = new NameValueCollection
                 {
