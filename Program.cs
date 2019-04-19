@@ -22,8 +22,13 @@ namespace quartz_hello_world
             {
                 var logProvider = new ConsoleLog();
                 var schedulerService = new SchedulerService();
-
-                await schedulerService.CreateInMemoryScheduler("my-scheduler", 2, logProvider);
+                
+                await schedulerService.CreateInMemoryScheduler(
+                    instanceName: "my-scheduler", 
+                    threadCount: 2, 
+                    logProvider: logProvider
+                );
+                
                 await schedulerService.Start();
 
                 await schedulerService.ScheduleJob<FooJob>(2);
