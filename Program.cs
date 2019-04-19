@@ -23,7 +23,8 @@ namespace quartz_hello_world
                 var logProvider = new ConsoleLog();
                 var schedulerService = new SchedulerService();
                 
-                 schedulerService.CreateInMemoryScheduler(
+                schedulerService
+                        .CreateInMemoryScheduler(
                             instanceName: "my-scheduler", 
                             threadCount: 2, 
                             logProvider: logProvider
