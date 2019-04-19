@@ -29,10 +29,10 @@ namespace quartz_hello_world
                     logProvider: logProvider
                 );
                 
-                await schedulerService.Start();
-
-                await schedulerService.ScheduleJob<FooJob>(2);
-                await schedulerService.ScheduleJob<BarJob>("* * * * * ? *");
+                 schedulerService
+                    .Start()
+                    .ScheduleJob<FooJob>(2)
+                    .ScheduleJob<BarJob>("* * * * * ? *");
 
                 Console.ReadLine();
             }

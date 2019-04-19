@@ -28,12 +28,14 @@ namespace Services
             _scheduler = await factory.GetScheduler();
         }
 
-        public Task Start()
+        public SchedulerService Start()
         {
-            return _scheduler.Start();
+             _scheduler.Start();
+
+             return this;
         }
 
-        public Task ScheduleJob<T>(int intervalInSeconds) where T : IJob
+        public SchedulerService ScheduleJob<T>(int intervalInSeconds) where T : IJob
         {
             IJobDetail job = JobBuilder.Create<T>()
                                .WithIdentity(typeof(T).Name, "job-group")
@@ -47,10 +49,12 @@ namespace Services
                   .RepeatForever())
               .Build();
 
-            return _scheduler.ScheduleJob(job, trigger);
+             _scheduler.ScheduleJob(job, trigger);
+
+            return this;
         }
 
-        public Task ScheduleJob<T>(string cronExpression) where T : IJob
+        public SchedulerService ScheduleJob<T>(string cronExpression) where T : IJob
         {
             IJobDetail job = JobBuilder.Create<T>()
                                .WithIdentity(typeof(T).Name, "job-group")
@@ -62,7 +66,9 @@ namespace Services
               .WithCronSchedule(cronExpression)
               .Build();
 
-            return _scheduler.ScheduleJob(job, trigger);
+            _scheduler.ScheduleJob(job, trigger);
+
+            return this;
         }
     }
 }
