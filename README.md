@@ -10,7 +10,7 @@ await schedulerService.CreateInMemoryScheduler(
     logProvider: logProvider
 );
 
-await schedulerService.S
+await schedulerService.Start();
 await schedulerService.ScheduleJob<FooJob>(2);
 await schedulerService.ScheduleJob<BarJob>("* * * * * ? *");
 ```
