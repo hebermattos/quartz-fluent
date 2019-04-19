@@ -6,9 +6,9 @@ using Quartz.Logging;
 
 namespace Services
 {
-    public class SchedulerService
+    public class SchedulerService: IScheduler
     {
-        private IScheduler _scheduler;
+        private Quartz.IScheduler _scheduler;
 
         public async Task CreateInMemoryScheduler(string instanceName, int threadCount, ILogProvider logProvider)
         {
@@ -28,14 +28,14 @@ namespace Services
             _scheduler = await factory.GetScheduler();
         }
 
-        public SchedulerService Start()
+        public IScheduler Start()
         {
              _scheduler.Start();
 
              return this;
         }
 
-        public SchedulerService ScheduleJob<T>(int intervalInSeconds) where T : IJob
+        public IScheduler ScheduleJob<T>(int intervalInSeconds) where T : IJob
         {
             IJobDetail job = JobBuilder.Create<T>()
                                .WithIdentity(typeof(T).Name, "job-group")
@@ -54,7 +54,7 @@ namespace Services
             return this;
         }
 
-        public SchedulerService ScheduleJob<T>(string cronExpression) where T : IJob
+        public IScheduler ScheduleJob<T>(string cronExpression) where T : IJob
         {
             IJobDetail job = JobBuilder.Create<T>()
                                .WithIdentity(typeof(T).Name, "job-group")
