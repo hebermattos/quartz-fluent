@@ -27,8 +27,8 @@ namespace quartz_hello_world
                             instanceName: "my-scheduler", 
                             threadCount: 2, 
                             logProvider: logProvider
-                        ).ScheduleJob<FooJob>(2)
-                         .ScheduleJob<BarJob>("* * * * * ? *");
+                        ).ScheduleJob<FooJob>(intervalInSeconds: 2)
+                         .ScheduleJob<BarJob>(cronExpression: "* * * * * ? *");
 
                 Console.ReadLine();
             }
