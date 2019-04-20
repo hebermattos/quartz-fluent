@@ -8,10 +8,12 @@ namespace Services
 {
     public interface IScheduler 
     {        
-         IScheduler CreateInMemoryScheduler(string instanceName, int threadCount, ILogProvider logProvider);
+         IScheduler CreateInMemoryScheduler(ILogProvider logProvider);
 
          IScheduler ScheduleJob<T>(int intervalInSeconds) where T : IJob;
 
          IScheduler ScheduleJob<T>(string cronExpression) where T : IJob;
+
+         void Run();
     }
 }

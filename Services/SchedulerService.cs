@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Quartz;
@@ -8,26 +10,23 @@ namespace Services
 {
     public class SchedulerService: IScheduler
     {
-        private Quartz.IScheduler _scheduler;
+        private List<(IJobDetail,ITrigger)> _jobs;
 
-        public IScheduler CreateInMemoryScheduler(string instanceName, int threadCount, ILogProvider logProvider)
+        private NameValueCollection _quartzProps;
+
+        public IScheduler CreateInMemoryScheduler(ILogProvider logProvider = null)
         {
+            _jobs = new List<(IJobDetail, ITrigger)>();
+
             if (logProvider != null)
                 LogProvider.SetCurrentLogProvider(logProvider);
 
-            NameValueCollection props = new NameValueCollection
+            _quartzProps = new NameValueCollection
                 {
                     {"quartz.serializer.type", "binary" },
-                    {"quartz.scheduler.instanceName" , instanceName} ,
-                    {"quartz.jobStore.type" , "Quartz.Simpl.RAMJobStore"} ,
-                    {"quartz.threadPool.threadCount" , threadCount.ToString()}
-                };
-
-            StdSchedulerFactory factory = new StdSchedulerFactory(props);
-
-            _scheduler = factory.GetScheduler().Result;
-
-            _scheduler.Start();
+                    {"quartz.scheduler.instanceName" , Guid.NewGuid().ToString()} ,
+                    {"quartz.jobStore.type" , "Quartz.Simpl.RAMJobStore"}
+                };        
 
             return this;
         }
@@ -46,7 +45,7 @@ namespace Services
                   .RepeatForever())
               .Build();
 
-             _scheduler.ScheduleJob(job, trigger);
+            _jobs.Add((job, trigger));
 
             return this;
         }
@@ -63,9 +62,23 @@ namespace Services
               .WithCronSchedule(cronExpression)
               .Build();
 
-            _scheduler.ScheduleJob(job, trigger);
+            _jobs.Add((job, trigger));
 
             return this;
+        }
+
+        public void Run()
+        {
+            _quartzProps.Add("quartz.threadPool.threadCount", _jobs.Count.ToString());
+            
+            var factory = new StdSchedulerFactory(_quartzProps);
+
+            var scheduler = factory.GetScheduler().Result;
+
+            scheduler.Start();
+
+            foreach (var job in _jobs)            
+                 scheduler.ScheduleJob(job.Item1, job.Item2);          
         }
     }
 }
