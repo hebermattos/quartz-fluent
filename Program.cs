@@ -22,7 +22,7 @@ namespace quartz_hello_world
             {
                 var schedulerService = new SchedulerService();
                 
-                schedulerService
+                await schedulerService
                         .CreateInMemoryScheduler()
                         .ScheduleJob<FooJob>(intervalInSeconds: 3)
                         .ScheduleJob<BarJob>(cronExpression: "* * * * * ? *")

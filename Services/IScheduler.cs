@@ -14,6 +14,6 @@ namespace Services
 
          IScheduler ScheduleJob<T>(string cronExpression) where T : IJob;
 
-         void Run();
+         Task Run();
     }
 }

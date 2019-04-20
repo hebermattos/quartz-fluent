@@ -67,18 +67,18 @@ namespace Services
             return this;
         }
 
-        public void Run()
+        public async Task Run()
         {
             _quartzProps.Add("quartz.threadPool.threadCount", _jobs.Count.ToString());
             
             var factory = new StdSchedulerFactory(_quartzProps);
 
-            var scheduler = factory.GetScheduler().Result;
+            var scheduler = await factory.GetScheduler();
 
-            scheduler.Start();
+            await scheduler.Start();
 
             foreach (var job in _jobs)            
-                 scheduler.ScheduleJob(job.Item1, job.Item2);          
+                 await scheduler.ScheduleJob(job.Item1, job.Item2);          
         }
     }
 }
