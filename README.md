@@ -3,7 +3,7 @@ how to (Program.cs)
 ``` 
 var schedulerService = new SchedulerService();
                 
-schedulerService
+await schedulerService
         .CreateInMemoryScheduler()
         .ScheduleJob<FooJob>(intervalInSeconds: 3)
         .ScheduleJob<BarJob>(cronExpression: "* * * * * ? *")
