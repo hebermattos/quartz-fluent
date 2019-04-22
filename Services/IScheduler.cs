@@ -9,6 +9,8 @@ namespace Services
     public interface IScheduler 
     {        
          IScheduler CreateInMemoryScheduler(ILogProvider logProvider);
+         
+         IScheduler CreateSqlServerScheduler(string connectionString, ILogProvider logProvider = null);
 
          IScheduler ScheduleJob<T>(int intervalInSeconds) where T : IJob;
 

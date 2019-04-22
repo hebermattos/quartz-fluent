@@ -23,7 +23,8 @@ namespace quartz_hello_world
                 var schedulerService = new SchedulerService();
                 
                 await schedulerService
-                        .CreateInMemoryScheduler()
+                        //.CreateInMemoryScheduler()
+                        .CreateSqlServerScheduler("Server=localhost\\SQLEXPRESS;Database=quartz;Trusted_Connection=True;")
                         .ScheduleJob<FooJob>(intervalInSeconds: 3)
                         .ScheduleJob<BarJob>(cronExpression: "* * * * * ? *")
                         .Run();
