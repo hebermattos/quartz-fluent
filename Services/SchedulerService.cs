@@ -8,9 +8,9 @@ using Quartz.Logging;
 
 namespace Services
 {
-    public class SchedulerService: IScheduler
+    public class SchedulerService : IScheduler
     {
-        private List<(IJobDetail,ITrigger)> _jobs;
+        private List<(IJobDetail, ITrigger)> _jobs;
 
         private NameValueCollection _quartzProps;
 
@@ -25,8 +25,32 @@ namespace Services
                 {
                     {"quartz.serializer.type", "binary" },
                     {"quartz.scheduler.instanceName" , Guid.NewGuid().ToString()} ,
-                    {"quartz.jobStore.type" , "Quartz.Simpl.RAMJobStore"}
-                };        
+                    {"quartz.jobStore.type" , "Quartz.Simpl.RAMJobStore, Quartz"}
+                };
+
+            return this;
+        }
+
+        public IScheduler CreateSqlServerScheduler(string connectionString, ILogProvider logProvider = null)
+        {
+            _jobs = new List<(IJobDetail, ITrigger)>();
+
+            if (logProvider != null)
+                LogProvider.SetCurrentLogProvider(logProvider);
+
+            _quartzProps = new NameValueCollection
+                {
+                    {"quartz.serializer.type", "binary" },
+                    {"quartz.scheduler.instanceName" , Guid.NewGuid().ToString()} ,
+                    {"quartz.jobStore.type" , "Quartz.Impl.AdoJobStore.JobStoreTX, Quartz"},
+                    {"quartz.jobStore.driverDelegateType", "Quartz.Impl.AdoJobStore.StdAdoDelegate"},
+                    {"quartz.jobStore.tablePrefix", "QRTZ_"},
+                    {"quartz.jobStore.dataSource", "default"},
+                    {"quartz.dataSource.default.connectionString", connectionString},
+                    {"quartz.dataSource.default.provider", "SqlServer"},
+                    {"quartz.jobStore.useProperties", "true"},
+                    {"quartz.jobStore.lockHandler.type", "Quartz.Impl.AdoJobStore.UpdateLockRowSemaphore, Quartz"}            
+                };
 
             return this;
         }
@@ -70,15 +94,15 @@ namespace Services
         public async Task Run()
         {
             _quartzProps.Add("quartz.threadPool.threadCount", _jobs.Count.ToString());
-            
+
             var factory = new StdSchedulerFactory(_quartzProps);
 
             var scheduler = await factory.GetScheduler();
 
             await scheduler.Start();
 
-            foreach (var job in _jobs)            
-                 await scheduler.ScheduleJob(job.Item1, job.Item2);          
+            foreach (var job in _jobs)
+                await scheduler.ScheduleJob(job.Item1, job.Item2);
         }
     }
 }
