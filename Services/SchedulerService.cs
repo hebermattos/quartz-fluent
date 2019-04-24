@@ -49,17 +49,15 @@ namespace Services
                     {"quartz.dataSource.default.connectionString", connectionString},
                     {"quartz.dataSource.default.provider", "SqlServer"},
                     {"quartz.jobStore.useProperties", "true"},
-                    {"quartz.jobStore.lockHandler.type", "Quartz.Impl.AdoJobStore.UpdateLockRowSemaphore, Quartz"}            
+                    {"quartz.jobStore.lockHandler.type", "Quartz.Impl.AdoJobStore.UpdateLockRowSemaphore, Quartz"}
                 };
 
             return this;
         }
 
-        public IScheduler ScheduleJob<T>(int intervalInSeconds) where T : IJob
+        public IScheduler ScheduleJob<T>(int intervalInSeconds, IEnumerable<object> objects = null) where T : IJob
         {
-            IJobDetail job = JobBuilder.Create<T>()
-                               .WithIdentity(typeof(T).Name, "job-group")
-                               .Build();
+            IJobDetail job = Createjob<T>(objects);
 
             ITrigger trigger = TriggerBuilder.Create()
               .WithIdentity(typeof(T).Name, "trigger-group")
@@ -74,11 +72,9 @@ namespace Services
             return this;
         }
 
-        public IScheduler ScheduleJob<T>(string cronExpression) where T : IJob
+        public IScheduler ScheduleJob<T>(string cronExpression, IEnumerable<object> objects = null) where T : IJob
         {
-            IJobDetail job = JobBuilder.Create<T>()
-                               .WithIdentity(typeof(T).Name, "job-group")
-                               .Build();
+             IJobDetail job = Createjob<T>(objects);
 
             ITrigger trigger = TriggerBuilder.Create()
               .WithIdentity(typeof(T).Name, "trigger-group")
@@ -103,6 +99,18 @@ namespace Services
 
             foreach (var job in _jobs)
                 await scheduler.ScheduleJob(job.Item1, job.Item2);
+        }
+        
+        private static IJobDetail Createjob<T>(IEnumerable<object> objects) where T : IJob
+        {
+            JobDataMap instances = new JobDataMap();
+            instances.Put("instances", objects);
+
+            IJobDetail job = JobBuilder.Create<T>()
+                               .UsingJobData(instances)
+                               .WithIdentity(typeof(T).Name, "job-group")
+                               .Build();
+            return job;
         }
     }
 }
