@@ -1,10 +1,18 @@
 how to (Program.cs)
 
 ``` 
-var schedulerService = new SchedulerService();
-                
+var services = new ServiceCollection();
+
+services.AddTransient<FooJob>();
+services.AddTransient<BarJob>()
+
+services.AddQuartz(SchedulerType.InMemory, 2)
+
+var serviceProvider = services.BuildServiceProvider()
+
+var schedulerService = serviceProvider.GetService<ISchedulerService>()
+
 await schedulerService
-        .CreateInMemoryScheduler()
         .ScheduleJob<FooJob>(intervalInSeconds: 3)
         .ScheduleJob<BarJob>(cronExpression: "* * * * * ? *")
         .Run();
