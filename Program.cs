@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Threading.Tasks;
-using Quartz;
-using Quartz.Impl;
-using Quartz.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Services;
+using Servico;
+using util;
 
 namespace quartz_hello_world
 {
@@ -18,23 +16,23 @@ namespace quartz_hello_world
 
         private static async Task RunProgram()
         {
-            try
-            {
-                var schedulerService = new SchedulerService();
-                
-                await schedulerService
-                        .CreateInMemoryScheduler()
-                        //.CreateSqlServerScheduler("Server=localhost\\SQLEXPRESS;Database=quartz;Trusted_Connection=True;")
-                        .ScheduleJob<FooJob>(intervalInSeconds: 3)
-                        .ScheduleJob<BarJob>(cronExpression: "* * * * * ? *")
-                        .Run();
+            var services = new ServiceCollection();
 
-                Console.ReadLine();
-            }
-            catch (SchedulerException se)
-            {
-                await Console.Error.WriteLineAsync(se.ToString());
-            }
+            services.AddTransient<FooJob>();
+            services.AddTransient<BarJob>();
+
+            services.AddQuartz(SchedulerType.InMemory, 2);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var schedulerService = serviceProvider.GetService<ISchedulerService>();
+
+            await schedulerService
+                    .ScheduleJob<FooJob>(intervalInSeconds: 3)
+                    .ScheduleJob<BarJob>(cronExpression: "* * * * * ? *")
+                    .Run();
+
+            Console.ReadLine();
         }
     }
 }
