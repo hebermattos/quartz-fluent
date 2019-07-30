@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Quartz;
 
-namespace Services
+namespace Scheduler
 {
     public interface ISchedulerService 
     {             

@@ -1,4 +1,4 @@
-namespace  util
+namespace Scheduler
 {
     public enum SchedulerType
     {

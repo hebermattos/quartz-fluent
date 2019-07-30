@@ -2,7 +2,7 @@ using System;
 using Quartz;
 using Quartz.Spi;
 
-namespace Servico.Implementacoes
+namespace Scheduler
 {
     public class IoCJobFactory : IJobFactory
     {

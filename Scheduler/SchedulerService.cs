@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Quartz;
 
-namespace Services
+namespace Scheduler
 {
     public class SchedulerService : ISchedulerService
     {

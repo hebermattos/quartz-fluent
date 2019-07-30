@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using Microsoft.Extensions.DependencyInjection;
-using Quartz;
 using Quartz.Impl;
-using Services;
-using Servico.Implementacoes;
-using util;
 
-namespace Servico
+namespace Scheduler
 {
     public static class QuartzExtensions
     {

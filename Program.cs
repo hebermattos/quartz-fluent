@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Services;
-using Servico;
-using util;
+using Scheduler;
 
 namespace quartz_hello_world
 {
